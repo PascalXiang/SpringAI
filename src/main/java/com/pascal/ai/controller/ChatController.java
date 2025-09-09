@@ -19,13 +19,18 @@ public class ChatController {
 
     private final ChatClient chatClient;
 
-    @RequestMapping(value = "/chat",produces = "text/html;charset=utf-8")
-    public Flux<String> chat(String prompt){
+    @RequestMapping(value = "/chat", produces = "text/html;charset=utf-8")
+    public Flux<String> chat(String prompt, String chatId) {
+        // 关键的调试日志！
+        System.out.println("Received request for chatId: " + chatId + ", with prompt: " + prompt);
+
         return chatClient.prompt()
                 .user(prompt)
+                .advisors(a -> a.param("conversationId", chatId))
                 .stream()
                 .content();
     }
+
 
     @GetMapping("/test")
     public String test() {
